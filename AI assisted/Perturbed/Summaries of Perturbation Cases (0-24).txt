@@ -1,0 +1,27 @@
+Summaries of Perturbation Cases (0-24):
+
+Case 0 (Random): Adds independent random offsets (uniform distribution) to x, y, and z coordinates.
+Case 1 (Sinusoidal): Perturbs x, y, z using sin or cos waves based on their coordinates and a frequency (effect parameter). Creates wave-like distortions along the axes.
+Case 2 (Circular): Perturbs x, y radially in the XY plane based on the angle. Creates a circular push/pull effect.
+Case 3 (Swirl): Perturbs x, y tangentially in the XY plane based on sin/cos of the radius multiplied by a factor (effect parameter), scaled by the opposite coordinate. Creates a swirling effect.
+Case 4 (Wave X): Adds a sine wave perturbation only along the X-axis, dependent on the x-coordinate and a frequency (effect parameter).
+Case 5 (Wave Y): Adds a cosine wave perturbation only along the Y-axis, dependent on the y-coordinate and a frequency (effect parameter).
+Case 6 (Radial): Perturbs x, y radially in the XY plane based on sin/cos of the radius multiplied by a frequency (effect parameter). Pushes/pulls points along lines from the origin.
+Case 7 (Polar Swirl): Perturbs x, y based on sin/cos of the angle mixed with the radius multiplied by a factor (effect parameter). Creates a complex swirl/wave in the XY plane.
+Case 8 (Blobby): Perturbs x, y using random values modulated by sin/cos cross terms involving a frequency (effect parameter). Creates a random, blocky distortion in the XY plane.
+Case 9 (Cross): Perturbs x, y based on sin(px)*cos(py) and cos(px)*sin(py). Creates a grid-like or cross-pattern distortion in the XY plane. (No specific effect parameter).
+Case 10 (Tangential): Perturbs x, y tangentially to circles centered at the origin in the XY plane. Creates a simple rotational push. (No specific effect parameter).
+Case 11 (Fisheye): Perturbs x, y radially based on a factor (effect parameter) divided by (radius + 1). Simulates a fisheye lens effect in the XY plane.
+Case 12 (Vortex): Perturbs x, y similar to Polar Swirl, based on sin/cos of angle plus radius multiplied by a factor (effect parameter). Creates a vortex-like swirl in the XY plane.
+Case 13 (Twirl): Perturbs x, y similar to Vortex, but the angle offset depends on sqrt(|x|+|y|) multiplied by a factor (effect parameter). Creates a tighter twirl effect in the XY plane.
+Case 14 (Noise): Adds deterministic noise to x, y, z using java.util.Random seeded with coordinates and a seed factor (effect parameter). Creates consistent noisy displacement.
+Case 15 (Hyperbolic): Perturbs x, y based on sin/cos(angle) divided by (sqrt(|x|+|y|) + offset), where offset is the effect parameter. Pushes points outwards hyperbolically in the XY plane.
+Case 16 (Sine 3D): Adds independent sine/cosine waves to x, y, and z based on their respective coordinates and frequencies (effectX, effectY, effectZ parameters).
+Case 17 (Shear): Perturbs x based on y, y based on x (using effectXY), and z based on (x+y) (using effectZ). Creates a shearing distortion.
+Case 18 (Spherical): Perturbs x, y, z based on spherical coordinates (r, theta, phi) using sin/cos waves applied to each component with frequencies (effectR, effectT, effectP). Creates complex spherical distortions.
+Case 19 (Grid Snap): Perturbs x, y, z by pushing them towards the nearest point on a 3D grid defined by a grid size (effect parameter).
+Case 20 (Exp Decay Random): Adds random offsets to x, y, z, where the magnitude decreases exponentially with the square of the distance from the origin, controlled by a decay rate (effect parameter).
+Case 21 (Polynomial): Perturbs x, y, z quadratically based on the square of the respective coordinate, scaled by coefficients (effectX, effectY, effectZ).
+Case 22 (Diamond): Perturbs x, y, z based on the sine of the Manhattan distance (|x|+|y|+|z|) using frequency and offset (effectFreq, effectOffset). Creates patterns aligned with diamond shapes.
+Case 23 (Gaussian Random): Adds random offsets to x, y, z drawn from a Gaussian (normal) distribution using the Box-Muller transform. (No specific effect parameter).
+Case 24 (Curl): Perturbs x, y tangentially based on sin(radius + z*effectZFactor), and perturbs z based on cos(z*effectFreq*0.5). Creates a 2D curl field in XY influenced by Z, plus a Z wave.
