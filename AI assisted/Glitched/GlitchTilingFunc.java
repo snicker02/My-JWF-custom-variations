@@ -5,36 +5,29 @@ import org.jwildfire.create.tina.base.XForm;
 import org.jwildfire.create.tina.base.XYZPoint;
 
 /**
- * Glitch: Per-Point Tiling.
- * Maps coordinates into repeating tiles using modulo arithmetic.
- * Frequency controls tile size (higher freq = smaller tile).
- * Chance controls probability. CenterX/CenterY set the tile grid origin.
+ * Glitch: Per-Point Twirl.
+ * Applies a rotational warp around a center point, increasing with distance.
+ * Amount controls twirl strength, Chance controls probability.
+ * CenterX/CenterY set the twirl origin.
  * Follows user-specified code structure.
  */
-public class GlitchTilingFunc extends VariationFunc {
+public class GlitchTwirlFunc extends VariationFunc {
 
-    private static final long serialVersionUID = 108L; // Unique ID
+    private static final long serialVersionUID = 105L; // Unique ID
 
-    private static final String PARAM_FREQUENCY = "frequency"; // Controls tile size (size = 1/freq)
-    private static final String PARAM_CHANCE = "chance";     // Probability (0-1)
-    private static final String PARAM_CENTER_X = "centerX";    // Tile grid origin X
-    private static final String PARAM_CENTER_Y = "centerY";    // Tile grid origin Y
+    private static final String PARAM_AMOUNT = "amount";   // Twirl strength factor
+    private static final String PARAM_CHANCE = "chance";   // Probability (0-1)
+    private static final String PARAM_CENTER_X = "centerX"; // Twirl center X
+    private static final String PARAM_CENTER_Y = "centerY"; // Twirl center Y
 
+    private static final String[] paramNames = { PARAM_AMOUNT, PARAM_CHANCE, PARAM_CENTER_X, PARAM_CENTER_Y };
 
-    private static final String[] paramNames = { PARAM_FREQUENCY, PARAM_CHANCE, PARAM_CENTER_X, PARAM_CENTER_Y };
-
-    private double frequency = 10.0; // Default frequency
+    private double amount = 0.5; // Twirl strength often > rotation amount
     private double chance = 1.0;
     private double centerX = 0.0;
     private double centerY = 0.0;
 
     // init method removed
-
-    // Helper function for true mathematical modulo (handles negative numbers)
-    private double mod(double a, double n) {
-        if (Math.abs(n) < 1e-9) return a; // Avoid division by zero
-        return ((a % n) + n) % n;
-    }
 
     // transform method without @Override
     public void transform(FlameTransformationContext pContext, XForm pXForm, XYZPoint pAffineTP, XYZPoint pVarTP, double pAmountVar) {
@@ -44,13 +37,22 @@ public class GlitchTilingFunc extends VariationFunc {
         double glitchY = y;
 
         if (pContext.random() < this.chance) {
-            double tFreq = (this.frequency <= 1e-6) ? 1.0 : this.frequency; // Ensure freq > 0
-            double tileSize = 1.0 / tFreq;
-            if (tileSize <= 1e-9) tileSize = 1.0; // Ensure tile size > 0
+            double dx = x - this.centerX;
+            double dy = y - this.centerY;
+            double r = Math.sqrt(dx*dx + dy*dy);
 
-            // Apply modulo relative to center point
-            glitchX = mod(x - this.centerX, tileSize) + this.centerX;
-            glitchY = mod(y - this.centerY, tileSize) + this.centerY;
+            if (r > 1e-9) { // Avoid singularity at center
+                double angle = Math.atan2(dy, dx);
+                // Twirl angle offset increases linearly with radius (r) and amount
+                // Add small random variation to twirl strength per point
+                double randMag = pContext.random() * 0.4 + 0.8; // Random factor 0.8-1.2
+                double angleOffset = this.amount * r * randMag;
+
+                angle += angleOffset; // Add twirl offset to original angle
+
+                glitchX = r * Math.cos(angle) + this.centerX;
+                glitchY = r * Math.sin(angle) + this.centerY;
+            }
         }
 
         pVarTP.x = pAmountVar * glitchX;
@@ -60,7 +62,7 @@ public class GlitchTilingFunc extends VariationFunc {
 
     // getName method without @Override
     public String getName() {
-        return "glitch_tiling";
+        return "glitch_twirl";
     }
 
     // getParameterNames method without @Override
@@ -70,13 +72,13 @@ public class GlitchTilingFunc extends VariationFunc {
 
     // getParameterValues method without @Override
     public Object[] getParameterValues() {
-        return new Object[] { frequency, chance, centerX, centerY };
+        return new Object[] { amount, chance, centerX, centerY };
     }
 
     // setParameter method without @Override
     public void setParameter(String pName, double pValue) {
-        if (PARAM_FREQUENCY.equalsIgnoreCase(pName)) {
-            frequency = pValue; // Allow zero/negative? Let's ensure positive in transform.
+         if (PARAM_AMOUNT.equalsIgnoreCase(pName)) {
+            amount = pValue;
         } else if (PARAM_CHANCE.equalsIgnoreCase(pName)) {
             chance = Math.max(0.0, Math.min(1.0, pValue));
         } else if (PARAM_CENTER_X.equalsIgnoreCase(pName)) {
