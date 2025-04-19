@@ -16,80 +16,108 @@
 */
 package org.jwildfire.create.tina.variation;
 
-
 import org.jwildfire.create.tina.base.XForm;
 import org.jwildfire.create.tina.base.XYZPoint;
-import static org.jwildfire.base.mathlib.MathLib.*; // exp, pow, fabs
 
-public class PerturbCase20Func extends VariationFunc {
+
+// Using basic multiplication, no specific MathLib imports needed beyond the standard structure.
+// If sign preservation like sgn(x)*x*x was desired, MathLib.sgn would be needed.
+
+/**
+ * Quadratic Perturbation Variation for JWildfire.
+ * Perturbs each coordinate based on the square of its own value,
+ * scaled by corresponding effect parameters (effectX, effectY, effectZ).
+ * perturbation_x = effectX * x^2
+ * perturbation_y = effectY * y^2
+ * perturbation_z = effectZ * z^2
+ * Corresponds to the concept described as "Case 21 (Polynomial)".
+ */
+public class PerturbCase21Func extends VariationFunc {
+
     private static final long serialVersionUID = 1L;
 
-    // Parameters
-    private static final String PARAM_POWX = "powX";
-    private static final String PARAM_POWY = "powY";
-    private static final String PARAM_POWZ = "powZ";
-    private static final String PARAM_PERTURB_AMOUNT = "perturbAmount";
-    private static final String PARAM_EFFECT = "effect"; // Was case20_Decay
-    private static final String[] paramNames = { PARAM_POWX, PARAM_POWY, PARAM_POWZ, PARAM_PERTURB_AMOUNT, PARAM_EFFECT };
+    // --- Parameter Definitions ---
+    private static final String PARAM_EFFECT_X = "effectX";
+    private static final String PARAM_EFFECT_Y = "effectY";
+    private static final String PARAM_EFFECT_Z = "effectZ";
 
-    // Member Variables & Defaults
-    private double powX = 1.0;
-    private double powY = 1.0;
-    private double powZ = 1.0;
-    private double perturbAmount = 1.0;
-    private double effect = 0.5; // Renamed from case20_Decay, default for original case20_Decay
+    // --- Parameter Name Array ---
+    private static final String[] paramNames = { PARAM_EFFECT_X, PARAM_EFFECT_Y, PARAM_EFFECT_Z };
 
+    // --- Member Variables & Defaults ---
+    private double effectX = 0.05; // Default coefficient for X perturbation
+    private double effectY = 0.05; // Default coefficient for Y perturbation
+    private double effectZ = 0.05; // Default coefficient for Z perturbation
+
+    /**
+     * Standard JWildfire transformation method.
+     * @param pContext      The transformation context.
+     * @param pXForm        The current transformation.
+     * KpAffineTP     The input point (after affine transformation).
+     * @param pVarTP        The output point (initially zero, accumulates variation results).
+     * @param pAmount       The variation amount ('variables' slider value).
+     */
     @Override
     public void transform(FlameTransformationContext pContext, XForm pXForm, XYZPoint pAffineTP, XYZPoint pVarTP, double pAmount) {
+
         double px = pAffineTP.x;
         double py = pAffineTP.y;
         double pz = pAffineTP.z;
 
-        // Base linear power transformation
-        double xBase = sgn(px) * pow(fabs(px), this.powX);
-        double yBase = sgn(py) * pow(fabs(py), this.powY);
-        double zBase = sgn(pz) * pow(fabs(pz), this.powZ);
+        // Calculate perturbation based on the square of the coordinate
+        // multiplied by the effect parameter.
+        // Note: px*px is always non-negative. This implements the description literally.
+        // If you wanted the perturbation to push away from the axis (preserving sign),
+        // you might use something like: effectX * px * MathLib.fabs(px)
+        double perturbationX = effectX * px * px;
+        double perturbationY = effectY * py * py;
+        double perturbationZ = effectZ * pz * pz;
 
-        // Perturbation (Exponential Decay Random - Case 20)
-        // Use 'effect' variable here as the decay rate
-        double distSq = px * px + py * py + pz * pz;
-        double decayFactor = exp(-distSq * effect);
+        // Add the calculated perturbation to the output point pVarTP.
+        // The result is scaled by the variation's overall amount (pAmount)
+        // for blending with other variations/transforms.
+        pVarTP.x += perturbationX * pAmount;
+        pVarTP.y += perturbationY * pAmount;
+        pVarTP.z += perturbationZ * pAmount;
+    }
 
-        double perturbationX = (pContext.random() * 2.0 - 1.0) * decayFactor * perturbAmount;
-        double perturbationY = (pContext.random() * 2.0 - 1.0) * decayFactor * perturbAmount;
-        double perturbationZ = (pContext.random() * 2.0 - 1.0) * decayFactor * perturbAmount;
+    // --- Standard Variation Methods ---
 
-        // Combine and apply amount
-        pVarTP.x += (xBase + perturbationX) * pAmount;
-        pVarTP.y += (yBase + perturbationY) * pAmount;
-        pVarTP.z += (zBase + perturbationZ) * pAmount;
+    @Override
+    public String getName() {
+        // Name that will appear in the JWildfire UI
+        return "aibsperturbCase22_quadratic";
     }
 
     @Override
-    public String[] getParameterNames() { return paramNames; }
+    public String[] getParameterNames() {
+        return paramNames;
+    }
 
     @Override
     public Object[] getParameterValues() {
-        return new Object[] { powX, powY, powZ, perturbAmount, effect };
+        // Return the current values of the parameters
+        return new Object[]{ effectX, effectY, effectZ };
     }
 
     @Override
     public String[] getParameterAlternativeNames() {
-         return new String[]{ "lT_powX", "lT_powY", "lT_powZ", "Perturb Strength", "Effect (Decay Rate)"};
+        // User-friendly names for the parameters in the UI
+        return new String[]{ "Effect X", "Effect Y", "Effect Z" };
     }
 
     @Override
     public void setParameter(String pName, double pValue) {
-        if (PARAM_POWX.equalsIgnoreCase(pName)) powX = pValue;
-        else if (PARAM_POWY.equalsIgnoreCase(pName)) powY = pValue;
-        else if (PARAM_POWZ.equalsIgnoreCase(pName)) powZ = pValue;
-        else if (PARAM_PERTURB_AMOUNT.equalsIgnoreCase(pName)) perturbAmount = pValue;
-        else if (PARAM_EFFECT.equalsIgnoreCase(pName)) effect = pValue;
-        else throw new IllegalArgumentException("Unknown parameter in " + getName() + ": " + pName);
+        // Set the parameter values from the UI
+        if (PARAM_EFFECT_X.equalsIgnoreCase(pName)) {
+            effectX = pValue;
+        } else if (PARAM_EFFECT_Y.equalsIgnoreCase(pName)) {
+            effectY = pValue;
+        } else if (PARAM_EFFECT_Z.equalsIgnoreCase(pName)) {
+            effectZ = pValue;
+        } else {
+            // Handle unknown parameters
+            throw new IllegalArgumentException("Unknown parameter in " + getName() + ": " + pName);
+        }
     }
-
-    @Override
-    public String getName() { return "perturbCase20_ExpDecayRand"; }
-
-    private double sgn(double arg) { return (arg >= 0) ? 1.0 : -1.0; }
 }
