@@ -128,7 +128,7 @@ public class KIFS3DFunc extends VariationFunc {
     // --- JWildfire Variation Boilerplate ---
 
     // Constructor
-    public KIFS_Core3DFunc() {
+    public KIFS3DFunc() {
         super();
     }
 
