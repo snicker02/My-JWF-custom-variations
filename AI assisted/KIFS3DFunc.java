@@ -84,19 +84,19 @@ public class KIFS3DFunc extends VariationFunc {
 
     // --- Parameter Values (Instance Variables) & Defaults --- // MODIFIED: Added new params & defaults
     // Iteration & Bailout
-    private int max_iter = 10;
-    private double bailout_radius = 4.0;
+    private int max_iter = 7;
+    private double bailout_radius = 1.1;
     // Scaling
-    private double kifs_scale_x = 2.0;
-    private double kifs_scale_y = 2.0;
-    private double kifs_scale_z = 2.0;
+    private double kifs_scale_x = 1.4;
+    private double kifs_scale_y = 1.4;
+    private double kifs_scale_z = -1.0;
     private int scale_pivot_type = 0; // NEW: Default to Center pivot
     // Center / Offset
     private double center_x = 0.0;
     private double center_y = 0.0;
     private double center_z = 0.0;
-    private double offset_x = 1.0;
-    private double offset_y = 1.0;
+    private double offset_x = -1.0;
+    private double offset_y = -1.0;
     private double offset_z = 1.0;
     // Folding
     // Fold Type Constants - // NEW: Added FOLD_TYPE_EDGE
@@ -117,9 +117,9 @@ public class KIFS3DFunc extends VariationFunc {
     private double edge_y = 0.0; // NEW: Default 0 (disabled)
     private double edge_z = 0.0; // NEW: Default 0 (disabled)
     // Rotation
-    private double rot_x = 0.0; // Degrees
-    private double rot_y = 0.0; // Degrees
-    private double rot_z = 0.0; // Degrees
+    private double rot_x = 5.0; // Degrees
+    private double rot_y = 5.0; // Degrees
+    private double rot_z = 5.0; // Degrees
     // Rotation Order Constants
     private static final int ROT_ORDER_XYZ = 0;
     private static final int ROT_ORDER_ZYX = 1;
@@ -140,7 +140,7 @@ public class KIFS3DFunc extends VariationFunc {
     private static final int POST_SYM_X = 1;
     private static final int POST_SYM_Y = 2;
     private static final int POST_SYM_Z = 4;
-    private int post_symmetry = POST_SYM_NONE;
+    private int post_symmetry = 7;
     // Coloring
     // Color Mode Constants
     private static final int COLOR_MODE_ITER = 0;
