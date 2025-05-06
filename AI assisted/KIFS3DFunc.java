@@ -339,9 +339,9 @@ public class KIFS3DFunc extends VariationFunc {
         double finalZ = z * pAmount;
 
         // Write the final coordinates and calculated color index (Unchanged)
-        pVarTP.x = finalX;
-        pVarTP.y = finalY;
-        pVarTP.z = finalZ;
+        pVarTP.x += finalX;
+        pVarTP.y += finalY;
+        pVarTP.z += finalZ;
         pVarTP.color = color_value;
     }
 
