@@ -292,7 +292,7 @@ public class EllipticUber3DFunc extends VariationFunc { // Renamed for clarity
 
     @Override
     public String getName() {
-        return "elliptic_3D"; // Updated name
+        return "elliptic_3D_uber"; // Updated name
     }
 
     @Override
