@@ -1,0 +1,65 @@
+AttractorFlow Variation: User Guide
+The AttractorFlow variation is a powerful tool for creating a huge range of complex, abstract patterns. It works by combining different mathematical formulas (attractors) with various wave shapes.
+
+Main Controls: The Modes
+These three parameters have the biggest impact on the overall look of your fractal. Start by changing these first.
+
+attractorMode: Selects the core mathematical engine.
+
+0 = Clifford: Creates smooth, flowing, and often intricate web-like patterns.
+
+1 = Peter de Jong: Produces organic, swirling, and sometimes chaotic shapes.
+
+2 = Svensson: Generates sharp, geometric, and flame-like structures.
+
+3 = Gumowski-Mira: Makes elegant, calligraphic patterns that look like distorted organisms.
+
+waveMode: Changes the shape of the waves used in the formula.
+
+0 = Sine: Smooth and organic. The default wave.
+
+1 = Square: Hard-edged and blocky. Great for digital or circuit-like patterns.
+
+2 = Triangle: Sharp and linear. Creates geometric, angular patterns.
+
+3 = Sawtooth: Jagged and harsh. Produces unique repeating lines.
+
+zMode: Controls how the fractal behaves in 3D space.
+
+0 = Legacy 2D: The pattern is essentially 2D, with a simple effect applied to the Z-axis.
+
+1 = Coupled 3D: A true 3D mode where the X, Y, and Z axes all influence each other to create complex three-dimensional shapes.
+
+Primary Shape Controls
+These parameters control the fundamental structure of the pattern. Small changes here can have big effects.
+
+yScale & xScale: These control the "cross-axis" influence. For example, yScale determines how much the Y position affects the new X position.
+
+xAmplitude & yAmplitude: These control the strength or size of the wave patterns on each axis.
+
+3D-Specific Controls
+These parameters only have an effect when zMode is set to 1 (Coupled 3D).
+
+zScale & zAmplitude: These work just like their X/Y counterparts but control the shape and strength of the pattern along the Z-axis.
+
+Fine-Tuning Controls
+Use these parameters to make more subtle adjustments once you have a basic shape you like. (Note: These have the strongest effect on the Clifford attractor).
+
+freqX & freqY: Adjust the frequency or "density" of the patterns. Higher values create more detail and repetition.
+
+phaseX & phaseY: Shift or "offset" the patterns without changing their basic shape. This is great for fine-tuning the alignment.
+
+Presets
+The preset parameter is a shortcut to load interesting starting points.
+
+0 = Custom: Allows for manual control of all sliders.
+
+1 = Clifford Classic: The original flowing pattern.
+
+2 = De Jong Circuits: A blocky pattern using the De Jong attractor and square waves.
+
+3 = Svensson Flames: A sharp pattern using the Svensson attractor and triangle waves.
+
+4 = 3D Warped Grid: A fully 3D Clifford pattern.
+
+Important: Changing any other slider will automatically set preset back to 0, allowing you to use the presets as a starting point for your own creations.
