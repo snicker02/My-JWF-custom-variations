@@ -32,7 +32,7 @@ import static org.jwildfire.base.mathlib.MathLib.M_PI;
  * @author Gemini based on user request and base code by Andreas Maschke
  */
 public class CamouflageFunc extends VariationFunc {
-  private static final long serialVersionUID = 7L; 
+  private static final long serialVersionUID = 8L; // Bumped version for new features and cleanup
 
   // Parameter names
   private static final String PARAM_SEED = "seed";
@@ -41,13 +41,14 @@ public class CamouflageFunc extends VariationFunc {
   private static final String PARAM_LEVELS = "levels";
   private static final String PARAM_OCTAVES = "octaves";
   private static final String PARAM_PERSISTENCE = "persistence";
+  private static final String PARAM_LACUNARITY = "lacunarity";
   private static final String PARAM_STRETCH = "stretch";
   private static final String PARAM_ROTATION = "rotation";
   private static final String PARAM_DISPLACEMENT = "displacement";
   private static final String PARAM_Z_OFFSET = "zOffset";
   private static final String PARAM_COLORIZE = "colorize";
 
-  private static final String[] paramNames = {PARAM_SEED, PARAM_SCALE, PARAM_NOISE_TYPE, PARAM_LEVELS, PARAM_OCTAVES, PARAM_PERSISTENCE, PARAM_STRETCH, PARAM_ROTATION, PARAM_DISPLACEMENT, PARAM_Z_OFFSET, PARAM_COLORIZE};
+  private static final String[] paramNames = {PARAM_SEED, PARAM_SCALE, PARAM_NOISE_TYPE, PARAM_LEVELS, PARAM_OCTAVES, PARAM_PERSISTENCE, PARAM_LACUNARITY, PARAM_STRETCH, PARAM_ROTATION, PARAM_DISPLACEMENT, PARAM_Z_OFFSET, PARAM_COLORIZE};
 
   // Default parameter values
   private double seed = 1000.0;
@@ -56,11 +57,12 @@ public class CamouflageFunc extends VariationFunc {
   private int levels = 4;
   private int octaves = 5;
   private double persistence = 0.5;
+  private double lacunarity = 2.0;
   private double stretch = 1.0;
   private double rotation = 0.5;
   private double displacement = 0.1;
   private double zOffset = 0.1;
-  private double colorize = 1.0; // on by default
+  private int colorize = 1; // 0=off, 1=on
 
   // --- Noise Implementation ---
 
@@ -177,27 +179,27 @@ public class CamouflageFunc extends VariationFunc {
             default: n = valueNoise(x * freq, y * freq, z * freq + seed); break;
         }
       noiseValue += n * amp;
-      freq *= 2.0;
+      freq *= lacunarity;
       amp *= persistence;
     }
 
     double quantizedNoise = Math.floor(noiseValue * levels);
 
-    if (this.colorize > 0.0) {
+    if (this.colorize == 1) {
       double colorIndex = (quantizedNoise % this.levels + this.levels) % this.levels;
       pVarTP.color = colorIndex / (double) this.levels;
     }
 
     double angle = quantizedNoise * M_PI * 2.0 * rotation / levels;
     double mag = quantizedNoise * displacement / levels;
-    double z_offset_val = quantizedNoise * zOffset / levels; // Dedicated Z offset calculation
+    double z_offset_val = quantizedNoise * zOffset / levels;
 
     double sin_a = Math.sin(angle);
     double cos_a = Math.cos(angle);
 
     double x_new = pAffineTP.x * cos_a - pAffineTP.y * sin_a + mag;
     double y_new = pAffineTP.x * sin_a + pAffineTP.y * cos_a + mag;
-    double z_new = pAffineTP.z + z_offset_val; // Apply the dedicated Z offset
+    double z_new = pAffineTP.z + z_offset_val;
 
     pVarTP.x += (x_new - pAffineTP.x) * pAmount;
     pVarTP.y += (y_new - pAffineTP.y) * pAmount;
@@ -211,14 +213,9 @@ public class CamouflageFunc extends VariationFunc {
 
   @Override
   public Object[] getParameterValues() {
-    return new Object[]{seed, scale, noiseType, levels, octaves, persistence, stretch, rotation, displacement, zOffset, colorize};
+    return new Object[]{seed, scale, noiseType, levels, octaves, persistence, lacunarity, stretch, rotation, displacement, zOffset, colorize};
   }
   
-  @Override
-  public String[] getParameterAlternativeNames() {
-    return new String[]{"camo_seed", "camo_scale", "camo_noiseType", "camo_levels", "camo_octaves", "camo_persistence", "camo_stretch", "camo_rotation", "camo_displacement", "camo_zOffset", "camo_colorize"};
-  }
-
   @Override
   public void setParameter(String pName, double pValue) {
     if (PARAM_SEED.equalsIgnoreCase(pName)) {
@@ -226,13 +223,15 @@ public class CamouflageFunc extends VariationFunc {
     } else if (PARAM_SCALE.equalsIgnoreCase(pName)) {
       scale = pValue;
     } else if (PARAM_NOISE_TYPE.equalsIgnoreCase(pName)) {
-      noiseType = (int) pValue;
+      noiseType = Math.max(0, Math.min(2, (int)pValue)); // Clamp to valid range 0-2
     } else if (PARAM_LEVELS.equalsIgnoreCase(pName)) {
       levels = Math.max(1, (int) pValue);
     } else if (PARAM_OCTAVES.equalsIgnoreCase(pName)) {
       octaves = Math.max(1, (int) pValue);
     } else if (PARAM_PERSISTENCE.equalsIgnoreCase(pName)) {
       persistence = pValue;
+    } else if (PARAM_LACUNARITY.equalsIgnoreCase(pName)) {
+      lacunarity = pValue;
     } else if (PARAM_STRETCH.equalsIgnoreCase(pName)) {
       stretch = pValue;
     } else if (PARAM_ROTATION.equalsIgnoreCase(pName)) {
@@ -242,7 +241,7 @@ public class CamouflageFunc extends VariationFunc {
     } else if (PARAM_Z_OFFSET.equalsIgnoreCase(pName)) {
       zOffset = pValue;
     } else if (PARAM_COLORIZE.equalsIgnoreCase(pName)) {
-      colorize = pValue;
+      colorize = pValue > 0.5 ? 1 : 0; // Treat as a boolean toggle
     } else {
       throw new IllegalArgumentException(pName);
     }
@@ -255,7 +254,7 @@ public class CamouflageFunc extends VariationFunc {
 
   @Override
   public VariationFuncType[] getVariationTypes() {
-    return new VariationFuncType[]{VariationFuncType.VARTYPE_3D, VariationFuncType.VARTYPE_SUPPORTED_BY_SWAN};
+    return new VariationFuncType[]{VariationFuncType.VARTYPE_3D};
   }
 
 }
