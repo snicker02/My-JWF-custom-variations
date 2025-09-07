@@ -1,0 +1,65 @@
+What is MobiqN?
+MobiqN is a 3D fractal generator that combines two concepts: the quaternion math of mobiq and the spherical "N-power" mapping of mobiusN. Think of it as a tool that first warps 3D space and then applies a complex transformation to create the final shape. It's highly experimental and capable of producing a vast range of organic, geometric, and intricate structures.
+
+Parameters Guide
+The variation is controlled by several groups of parameters.
+
+Core Shape (Quaternion DNA)
+These 16 parameters are the fundamental blueprint for the fractal's shape. They are grouped into four quaternions: a, b, c, and d.
+
+qat, qax, qay, qaz: Components of quaternion a.
+
+qbt, qbx, qby, qbz: Components of quaternion b.
+
+qct, qcx, qcy, qcz: Components of quaternion c.
+
+qdt, qdx, qdy, qdz: Components of quaternion d.
+
+Tip: Making random, large changes to these values is unpredictable. It's best to start with a working example and adjust them one at a time by small amounts to see how the shape evolves.
+
+Warping and Features
+These parameters control the high-level features and geometry.
+
+power: Controls the "folding" or symmetry of the N-power mapping. Values like 2, 3, 4 will create that many "arms" or repeating sections. Negative values can invert the shape.
+
+dist: Works with power to control the scale and intensity of the warping effect.
+
+iterations: This is a key parameter for complexity. A value of 1 shows the basic shape. Increasing it to 2, 3, or higher will feed the shape back into itself, creating vastly more detail and self-similar patterns.
+
+spaceType: Changes the fundamental geometry of the fractal.
+
+0: Euclidean (Normal, "flat" space).
+
+1: Hyperbolic (Curves outward, creating expansive, coral-like structures).
+
+2: Spherical (Folds inward, creating bounded, sphere-like shapes).
+
+Coloring
+The colorMode parameter lets you choose different algorithms to color your fractal. Experiment to see which one best highlights the details of your shape.
+
+0: Default. Lets JWildfire handle coloring.
+
+1: Pre-transform Distance. Colors based on the point's distance after the initial warp.
+
+2: Quaternion Real Part. A technical mode that colors based on the internal math.
+
+3: Denominator Magnitude. Often highlights the most complex, detailed areas of the fractal.
+
+4: Final Z-Depth. Colors based on height, giving a simple 3D lighting effect.
+
+5: Expansion/Contraction. Shows where the shape is stretched (one color) versus compressed (another color).
+
+6: Angular Twist. Creates swirling color patterns that follow the rotational flow of the shape.
+
+How to Get Started
+Here's a simple workflow for exploring MobiqN:
+
+Find a Base Shape: Set iterations = 1 and spaceType = 0. Adjust the 16 q... parameters until you see a basic 3D form that looks interesting.
+
+Add Complexity: Increase iterations to 2 or 3. Your simple shape will instantly become more detailed and "fractal-like."
+
+Adjust the Warp: Now, play with the power and dist sliders to change the symmetry and scale of the details.
+
+Change the Universe: Switch the spaceType to 1 (Hyperbolic) or 2 (Spherical) to dramatically transform your fractal's overall geometry.
+
+Find the Right Colors: Cycle through colorMode values 1 through 6 to find a scheme that makes your final creation pop.
